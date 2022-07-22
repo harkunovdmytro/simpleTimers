@@ -5,6 +5,21 @@ document.body.append(alarm);
 class Timer {
   static field = document.getElementById("timers");
   static ids = 0;
+  static loadTimers() {
+    const savedTimers = JSON.parse(localStorage.getItem("timers"));
+    if (localStorage.getItem("timers") === null) {
+      {
+        localStorage.setItem("timers", "[]");
+        Timer.loadTimers();
+      }
+    } else if (savedTimers === "" || savedTimers.length === 0) {
+      Timer.field.innerHTML = "<h2>Нет сохраненных таймеров.</h2>";
+    } else {
+      for (let timer of savedTimers) {
+        new Timer(timer);
+      }
+    }
+  }
   static clearField() {
     this.field.innerHTML = "";
   }
@@ -93,11 +108,4 @@ clearTimersBtn.onclick = function createTimer() {
   Timer.clearField();
 };
 
-const savedTimers = JSON.parse(localStorage.getItem("timers"));
-if (savedTimers === "" || savedTimers.length === 0) {
-  Timer.field.innerHTML = "<h2>Нет сохраненных таймеров.</h2>";
-} else {
-  for (let timer of savedTimers) {
-    new Timer(timer);
-  }
-}
+Timer.loadTimers();
